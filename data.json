@@ -1,0 +1,44 @@
+{
+    "questions": [
+      {
+        "question": "What is the capital of England ?",
+        "propositions": [
+          "Paris",
+          "London",
+          "Roma",
+          "Oslo"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Who is the current president of France ?",
+        "propositions": [
+          "Lepen",
+          "Hollande",
+          "Chirac",
+          "Macron"
+        ],
+        "answer": 4
+      },
+      {
+        "question": "Where come from the coronavirus ?",
+        "propositions": [
+          "France",
+          "USA",
+          "China",
+          "India"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "When happened the second world war ?",
+        "propositions": [
+          "1990",
+          "1939",
+          "1918",
+          "1999"
+        ],
+        "answer": 2
+      }
+    ]
+  }
