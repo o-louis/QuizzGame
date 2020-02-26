@@ -1,41 +1,27 @@
 class Quizz {
     constructor() {
         this.score = 0;
-        this.currentQuestion = 0;
         this.questions = [];
+        this.counter = 0;
     }
 
     async launch() {
         var _this = this;
-        var counter = 0;
         var form = document.getElementById("formAnswer");
 
-        this.questions = await this.getJson()
-                                    .then(data => data.questions)
-                                    .catch(e => console.error(e));
+        this.questions = await this.getQuestions();
+        this.displayNextQuestion(this.counter);
 
-        this.displayNextQuestion(counter);
         form.addEventListener("submit", function(event) {
             event.preventDefault();
-
-            if (counter < _this.questions.length) {
-                
-                var userAnswer = _this.getUserAnswer();
-                var indexCorrectAnswer = _this.questions[counter].answer-1;
-                var correctAnswer = _this.questions[counter].propositions[indexCorrectAnswer];
-                var labels = document.querySelectorAll("label");
-                
-                labels[indexCorrectAnswer].style.color = "green";
-                if (userAnswer.checked.value !== correctAnswer) {
-                    labels[userAnswer.index].style.color = "red";
-                }
-
+            if (_this.counter < _this.questions.length) {
+                _this.checkUserAnswer();
                 setTimeout(() => {
-                    _this.displayNextQuestion(++counter);
+                    _this.displayNextQuestion(++_this.counter);
                     _this.resetColor();
-                }, 2000);
-
+                }, 1500);
             }
+            _this.displayScore();
         });
     }
 
@@ -55,6 +41,20 @@ class Quizz {
         }
     }
 
+    checkUserAnswer() {
+        var userAnswer = this.getUserAnswer();
+        var indexCorrectAnswer = this.questions[this.counter].answer-1;
+        var correctAnswer = this.questions[this.counter].propositions[indexCorrectAnswer];
+        var labels = document.querySelectorAll("label");
+
+        labels[indexCorrectAnswer].style.color = "green";
+        if (userAnswer.checked.value !== correctAnswer) {
+            labels[userAnswer.index].style.color = "red";
+        } else {
+            this.score += 10;
+        }
+    }
+
     resetColor() {
         var labels = document.querySelectorAll("label");
         for (var i =0 ; i < labels.length; i++) {
@@ -62,6 +62,20 @@ class Quizz {
         }
     }
 
+    displayScore() {
+        if (this.counter === (this.questions.length-1)) {
+            setTimeout(() => {
+                var container = document.getElementsByClassName("question")[0];
+                var form = document.getElementById("formAnswer");
+                var scoreContainer = document.getElementsByClassName("result")[0];
+
+                form.className = "none";
+                container.className += " none";
+                scoreContainer.innerHTML = "Your score is " + this.score + " ! YAY";
+            }, 1000);
+        }
+    }
+    
     getUserAnswer() {
         var radios = document.querySelectorAll('input[type="radio"]:checked');
         var value = (radios.length > 0) ? radios[0] : null;
@@ -82,17 +96,16 @@ class Quizz {
         return index;
     }
 
-    getJson() {
+    getQuestions() {
         var json = "./data.json";
         return fetch(json)
                 .then(response => response.json())
+                .then(data => data.questions)
                 .catch(error => console.error(error));
     }
 }
 
-function _init() {
+window.onload = function() {
     const quizz = new Quizz();
     quizz.launch();
-}
-
-window.onload = _init;
+};
