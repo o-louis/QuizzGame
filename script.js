@@ -2,39 +2,44 @@ class Quizz {
     constructor() {
         this.score = 0;
         this.questions = [];
-        this.counter = 0;
+        this.questionNumber = 0;
     }
 
     async launch() {
-        var _this = this;
-        var form = document.getElementById("formAnswer");
+        let _this = this;
+        const form = document.getElementById("formAnswer");
 
         this.questions = await this.getQuestions();
-        this.displayNextQuestion(this.counter);
+        this.updateQuestionNumber();
+        this.displayQuestion(this.questionNumber);
+        this.highlightSelectedInput();
 
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            if (_this.counter < _this.questions.length) {
+        form.addEventListener("submit", (e) =>{
+            e.preventDefault();
+            if (_this.questionNumber < _this.questions.length) {
                 _this.checkUserAnswer();
                 setTimeout(() => {
-                    _this.displayNextQuestion(++_this.counter);
+                    _this.displayQuestion(++_this.questionNumber);
+                    _this.updateQuestionNumber();
                     _this.resetColor();
                 }, 1500);
             }
             _this.displayScore();
+            _this.replay();
         });
     }
 
-    displayNextQuestion(index) {
-        var container = document.getElementsByClassName("question")[0];
-        var labels = document.querySelectorAll("label");
-        var radioInput = document.querySelectorAll("input[type=radio]");
+    displayQuestion(index) {
+        let labels = document.querySelectorAll("label");
+        let container = document.getElementsByClassName("question")[0];
+        let radioInput = document.querySelectorAll("input[type=radio]");
 
         if (this.questions[index]) {
             container.innerHTML = this.questions[index].question;
-            for (var i = 0; i < labels.length; i++) {
-                var answer = this.questions[index].propositions[i];
+            for (let i = 0; i < labels.length; i++) {
+                const answer = this.questions[index].propositions[i];
                 radioInput[i].value = answer;
+                radioInput[i].id = answer;
                 labels[i].setAttribute("for", answer);
                 labels[i].innerHTML = answer;
             }
@@ -42,50 +47,77 @@ class Quizz {
     }
 
     checkUserAnswer() {
-        var userAnswer = this.getUserAnswer();
-        var indexCorrectAnswer = this.questions[this.counter].answer-1;
-        var correctAnswer = this.questions[this.counter].propositions[indexCorrectAnswer];
-        var labels = document.querySelectorAll("label");
+        let userAnswer = this.getUserAnswer();
+        let labels = document.querySelectorAll("label");
+        
+        const indexCorrectAnswer = this.questions[this.questionNumber].answer-1;
+        const correctAnswer = this.questions[this.questionNumber].propositions[indexCorrectAnswer];
 
-        labels[indexCorrectAnswer].style.color = "green";
+        labels[indexCorrectAnswer].className = "green";
         if (userAnswer.checked.value !== correctAnswer) {
-            labels[userAnswer.index].style.color = "red";
+            labels[userAnswer.index].className = "red";
         } else {
-            this.score += 10;
+            this.score += 1;
         }
     }
 
     resetColor() {
-        var labels = document.querySelectorAll("label");
-        for (var i =0 ; i < labels.length; i++) {
-            labels[i].style.color = "black";
-        }
+        let labels = document.querySelectorAll("label");
+        this.removeClass(labels);
     }
 
     displayScore() {
-        if (this.counter === (this.questions.length-1)) {
+        if (this.questionNumber === (this.questions.length-1)) {
             setTimeout(() => {
-                var container = document.getElementsByClassName("question")[0];
-                var form = document.getElementById("formAnswer");
-                var scoreContainer = document.getElementsByClassName("result")[0];
+                let container = document.getElementsByClassName("question")[0];
+                let form = document.getElementById("formAnswer");
+                let result = document.querySelector(".result");
+                let scoreContainer = document.querySelector(".result span");
 
+                result.className = "result";
                 form.className = "none";
                 container.className += " none";
-                scoreContainer.innerHTML = "Your score is " + this.score + " ! YAY";
+                scoreContainer.innerHTML = "Your score is " + this.score + "!";
             }, 1000);
         }
     }
+
+    highlightSelectedInput() {
+        const radioLabels = document.querySelectorAll('label');
+        radioLabels.forEach((item) => {
+            item.addEventListener("click", () => {
+                this.removeClass(radioLabels);
+                item.className = "selected"
+            })
+        });
+    }
+
+    updateQuestionNumber() {
+        let title = document.querySelectorAll('.question_number')[0];
+        if (this.questionNumber === this.questions.length) {
+            title.innerText = `Finish`;
+        } else {
+            title.innerText = `Question ${this.questionNumber+1}/${this.questions.length}`
+        }
+    }
+
+    replay() {
+        let button = document.querySelector(".result button");
+        button.addEventListener('click', () => {
+            window.location.reload();
+        })
+    }
     
     getUserAnswer() {
-        var radios = document.querySelectorAll('input[type="radio"]:checked');
-        var value = (radios.length > 0) ? radios[0] : null;
-        return {checked: value, index: this.getIndex()};
+        let questionChecked = document.querySelectorAll('input[type="radio"]:checked');
+        let value = (questionChecked.length > 0) ? questionChecked[0] : null;
+        return { checked: value, index: this.getIndex() };
     }
 
     getIndex() {
-        var input = document.getElementsByTagName('input');
-        var index;
-        for (var i = 0; i < input.length; i++) {
+        let input = document.getElementsByTagName('input');
+        let index;
+        for (let i = 0; i < input.length; i++) {
             if (input[i].type="radio") {
                 if (input[i].checked) {
                     index = i;
@@ -96,12 +128,18 @@ class Quizz {
         return index;
     }
 
-    getQuestions() {
-        var json = "./data.json";
+    async getQuestions() {
+        const json = "./data.json";
         return fetch(json)
                 .then(response => response.json())
                 .then(data => data.questions)
                 .catch(error => console.error(error));
+    }
+
+    removeClass(element) {
+        element.forEach(item => {
+            item.className = "";
+        });
     }
 }
 
