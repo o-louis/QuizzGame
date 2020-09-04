@@ -1,44 +1,84 @@
 {
     "questions": [
       {
-        "question": "What is the capital of England ?",
+        "question": "How many times has Andy Murray won Wimbledon playing singles ?",
         "propositions": [
-          "Paris",
-          "London",
-          "Roma",
-          "Oslo"
+          "Once",
+          "Twice",
+          "Thrice",
+          "Four times"
         ],
         "answer": 2
       },
       {
-        "question": "Who is the current president of France ?",
+        "question": "Which country is brie cheese originally from ?",
         "propositions": [
-          "Lepen",
-          "Hollande",
-          "Chirac",
-          "Macron"
+          "Holland",
+          "Italy",
+          "Portugal",
+          "France"
         ],
         "answer": 4
       },
       {
-        "question": "Where come from the coronavirus ?",
+        "question": "In what franchise would you find the character Katniss Everdeen ?",
         "propositions": [
-          "France",
-          "USA",
-          "China",
-          "India"
+          "The Hunger Games",
+          "The Lord of the Rings",
+          "Harry Potter",
+          "Star Wars"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "What year was Heinz established ?",
+        "propositions": [
+          "1969",
+          "1889",
+          "1869",
+          "1910"
         ],
         "answer": 3
       },
       {
-        "question": "When happened the second world war ?",
+        "question": "At the time of writing (May 2020), who is fifth in line to the British throne ?",
         "propositions": [
-          "1990",
-          "1939",
-          "1918",
-          "1999"
+          "Queen Elisabeth",
+          "Prince Louis Of Cambridge",
+          "Prince Henry",
+          "Prince William"
         ],
         "answer": 2
+      },
+      {
+        "question": "What is the capital of Iceland ?",
+        "propositions": [
+          "Kingston",
+          "Edimburg",
+          "Berlin",
+          "Reykjavik"
+        ],
+        "answer": 4
+      },
+      {
+        "question": "Who came second in the FIFA Women's World Cup in 2019 ?",
+        "propositions": [
+          "Netherlands",
+          "Greece",
+          "Japan",
+          "France"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "What year did Margaret Thatcher die ?",
+        "propositions": [
+          "2018",
+          "2016",
+          "2013",
+          "2012"
+        ],
+        "answer": 3
       }
     ]
   }
